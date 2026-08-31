@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Boutique - Vidygo</title>
+    
+    <!-- SDK Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a1a;
+            padding: 20px 12px 40px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .header h1 span { color: #25D366; }
+        .header .back-link {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .header .back-link:hover { background: #25D366; color: white; }
+
+        /* GRILLE */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        /* CARTE PRODUIT */
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+        .product-card:active { transform: scale(0.97); }
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #eee;
+        }
+        .product-card .info {
+            padding: 12px 14px 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .product-card .info .name {
+            font-weight: 600;
+            font-size: 15px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .product-card .info .price {
+            font-weight: 700;
+            font-size: 18px;
+            color: #25D366;
+            margin-top: 4px;
+        }
+        .product-card .info .seller {
+            font-size: 12px;
+            color: #888;
+        }
+        .product-card .info .stock-badge {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 50px;
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: 6px;
+        }
+        .stock-ok { background: #e8f5e9; color: #2e7d32; }
+        .stock-out { background: #ffebee; color: #c62828; }
+
+        /* CHARGEMENT / VIDE */
+        .loading-state, .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+        .loading-state .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e0e0e0;
+            border-top: 4px solid #25D366;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* FOOTER */
+        .footer-credit {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #aaa;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        .footer-credit strong { color: #666; }
+
+        /* RESPONSIVE */
+        @media (min-width: 600px) {
+            .product-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        }
+        @media (min-width: 900px) {
+            .product-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🛍️ <span>Vidygo</span> · Boutique</h1>
+        <a href="index.html" class="back-link">🏠 Accueil</a>
+    </div>
+
+    <!-- GRILLE -->
+    <div id="productGrid" class="product-grid">
+        <!-- Rempli par JavaScript -->
+    </div>
+
+    <!-- ÉTATS (Chargement / Vide) -->
+    <div id="loadingState" class="loading-state">
+        <div class="spinner"></div>
+        <p>Chargement des produits...</p>
+    </div>
+    <div id="emptyState" class="empty-state" style="display:none;">
+        <p style="font-size:40px;">📦</p>
+        <p>Aucun produit disponible pour le moment.<br>Revenez bientôt !</p>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer-credit">
+        Site développé par <strong>Yv Laroch</strong> / <strong>GraphyNdot</strong>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // 1. CONFIGURATION (À REMPLACER AVEC TES VRAIES CLÉS)
+    // ============================================================
+    const SUPABASE_URL = 'https://ton-projet.supabase.co';
+    const SUPABASE_ANON_KEY = 'ton_cle_anon_publique';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ============================================================
+    // 2. AFFICHAGE DES PRODUITS
+    // ============================================================
+    const grid = document.getElementById('productGrid');
+    const loadingState = document.getElementById('loadingState');
+    const emptyState = document.getElementById('emptyState');
+
+    async function loadProducts() {
+        try {
+            // On récupère tous les produits avec du stock > 0 ET qui ont un slug (pour éviter les erreurs)
+            const { data, error } = await supabase
+                .from('products')
+                .select('id, name, price, photo_url, slug, stock, seller_name')
+                .gt('stock', 0)          // Stock > 0
+                .not('slug', 'is', null) // Avoir un slug
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Erreur Supabase :', error);
+                loadingState.innerHTML = '<p style="color:#c62828;">❌ Erreur de chargement. Vérifie la console.</p>';
+                return;
+            }
+
+            loadingState.style.display = 'none';
+
+            if (!data || data.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            // Construction des cartes
+            let html = '';
+            data.forEach(product => {
+                const stockLabel = product.stock > 0 ? '✅ En stock' : '❌ Rupture';
+                const stockClass = product.stock > 0 ? 'stock-ok' : 'stock-out';
+                const link = `https://vidygo.com/p/${product.slug}`; // À adapter à ton domaine
+
+                html += `
+                    <a href="${link}" class="product-card">
+                        <img src="${product.photo_url}" alt="${product.name}" loading="lazy" />
+                        <div class="info">
+                            <div class="name">${product.name}</div>
+                            <div class="price">${product.price.toLocaleString()} Ar</div>
+                            <div class="seller">👤 ${product.seller_name || 'Vendeur'}</div>
+                            <span class="stock-badge ${stockClass}">${stockLabel}</span>
+                        </div>
+                    </a>
+                `;
+            });
+
+            grid.innerHTML = html;
+
+        } catch (err) {
+            console.error('Erreur fatale :', err);
+            loadingState.innerHTML = '<p style="color:#c62828;">❌ Erreur de connexion. Réessaye plus tard.</p>';
+        }
+    }
+
+    // ============================================================
+    // 3. LANCEMENT
+    // ============================================================
+    loadProducts();
+</script>
+
+</body>
+</html>
