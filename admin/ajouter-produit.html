@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Publier un produit - Vidygo</title>
+    
+    <!-- Chargement du SDK Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* ===== RESET & BASE ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px 12px 40px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 420px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 24px 20px 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        /* ===== HEADER ===== */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .app-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        .app-header .brand {
+            font-size: 14px;
+            font-weight: 700;
+            color: #25D366;
+            letter-spacing: 0.5px;
+        }
+        .app-header .brand span {
+            font-weight: 300;
+            color: #888;
+        }
+        .subtitle {
+            color: #65676b;
+            font-size: 14px;
+            margin-bottom: 24px;
+            border-left: 3px solid #25D366;
+            padding-left: 12px;
+        }
+
+        /* ===== ZONE UPLOAD PHOTO ===== */
+        .upload-zone {
+            background: #f7f8fa;
+            border: 2px dashed #d0d1d5;
+            border-radius: 16px;
+            padding: 32px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .upload-zone:active { background: #e9ebee; }
+        .upload-zone img { 
+            max-width: 100%; 
+            max-height: 200px; 
+            border-radius: 8px;
+            display: none;
+            margin: 0 auto;
+        }
+        .upload-zone .placeholder {
+            display: block;
+            font-size: 40px;
+            line-height: 1.2;
+        }
+        .upload-zone .placeholder span {
+            display: block;
+            font-size: 14px;
+            color: #65676b;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+        #photoInput { display: none; }
+
+        /* ===== CHAMPS ===== */
+        .field-group {
+            margin-bottom: 18px;
+        }
+        .field-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .field-group input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 1px solid #d0d1d5;
+            border-radius: 12px;
+            background: #f7f8fa;
+            transition: 0.2s;
+            outline: none;
+            font-family: inherit;
+        }
+        .field-group input:focus {
+            border-color: #25D366;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.15);
+        }
+
+        /* ===== BOUTON PUBLIER ===== */
+        .btn-publish {
+            width: 100%;
+            padding: 16px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            margin-top: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+        .btn-publish:active { transform: scale(0.97); background: #1da855; }
+        .btn-publish:disabled {
+            opacity: 0.6;
+            transform: scale(1);
+            pointer-events: none;
+        }
+
+        /* ===== RÉSULTAT ===== */
+        #resultBox {
+            display: none;
+            background: #e8f5e9;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 24px;
+            border: 1px solid #a5d6a7;
+        }
+        #resultBox .label {
+            font-weight: 600;
+            color: #1e5a2b;
+            font-size: 14px;
+        }
+        #generatedLink {
+            background: white;
+            padding: 12px 14px;
+            border-radius: 10px;
+            word-break: break-all;
+            font-size: 14px;
+            color: #0066cc;
+            margin: 10px 0;
+            border: 1px solid #c8e6c9;
+        }
+        .btn-copy {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        .btn-copy:active { background: #004c99; }
+
+        /* ===== SPINNER ===== */
+        .spinner {
+            display: none;
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* ===== ERREUR ===== */
+        .error-msg {
+            background: #ffebee;
+            color: #b71c1c;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            display: none;
+            margin-top: 12px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-credit {
+            margin-top: 28px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+        }
+        .footer-credit strong {
+            color: #666;
+            font-weight: 600;
+        }
+        .footer-credit a {
+            color: #25D366;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- ===== HEADER ===== -->
+    <div class="app-header">
+        <h1>📸 Nouvel article</h1>
+        <div class="brand">Vidygo <span>|</span> Marketplace</div>
+    </div>
+    <div class="subtitle">Publiez en 2 clics, on s'occupe du reste</div>
+
+    <!-- ===== ZONE PHOTO ===== -->
+    <div class="upload-zone" id="photoZone">
+        <div class="placeholder" id="placeholderText">
+            📷
+            <span>Appuyez pour prendre la photo</span>
+        </div>
+        <img id="previewImage" src="" alt="Aperçu">
+    </div>
+    <input type="file" id="photoInput" accept="image/*" capture="environment">
+
+    <!-- ===== CHAMPS ===== -->
+    <div class="field-group">
+        <label>🏷️ Nom du produit</label>
+        <input type="text" id="productName" placeholder="Ex: Robe longue fleurie" autocomplete="off">
+    </div>
+
+    <div class="field-group">
+        <label>💰 Prix (Ar)</label>
+        <input type="number" id="productPrice" placeholder="85000" autocomplete="off">
+    </div>
+
+    <div class="field-group">
+        <label>📦 Quantité en stock</label>
+        <input type="number" id="productStock" placeholder="5" autocomplete="off">
+    </div>
+
+    <!-- ===== BOUTON ===== -->
+    <button class="btn-publish" id="publishBtn">
+        <span id="btnText">🚀 Publier sur la vitrine</span>
+        <div class="spinner" id="btnSpinner"></div>
+    </button>
+
+    <!-- ===== ERREUR ===== -->
+    <div class="error-msg" id="errorMsg"></div>
+
+    <!-- ===== RÉSULTAT ===== -->
+    <div id="resultBox">
+        <div class="label">✅ Produit publié ! Voici votre lien :</div>
+        <div id="generatedLink">https://vidygo.com/p/... </div>
+        <button class="btn-copy" id="copyBtn">📋 Copier le lien</button>
+        <p style="font-size:12px; color:#555; margin-top:12px;">Collez ce lien sur Facebook, WhatsApp ou TikTok. La miniature s'affichera automatiquement.</p>
+    </div>
+
+    <!-- ===== FOOTER CRÉDIT ===== -->
+    <div class="footer-credit">
+        Site développé par <strong>Yv Laroch</strong> / <strong>GraphyNdot</strong>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // 1. CONFIGURATION (À REMPLACER AVEC TES VRAIES CLÉS)
+    // ============================================================
+    const SUPABASE_URL = 'https://ton-projet.supabase.co';
+    const SUPABASE_ANON_KEY = 'ton_cle_anon_publique';
+    const CLOUDINARY_UPLOAD_PRESET = 'ton_upload_preset';
+    const CLOUDINARY_CLOUD_NAME = 'ton_cloud_name';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ============================================================
+    // 2. LOGIQUE DE L'UPLOAD PHOTO
+    // ============================================================
+    const photoZone = document.getElementById('photoZone');
+    const photoInput = document.getElementById('photoInput');
+    const previewImage = document.getElementById('previewImage');
+    const placeholderText = document.getElementById('placeholderText');
+    let uploadedImageUrl = '';
+
+    photoZone.addEventListener('click', () => photoInput.click());
+
+    photoInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Aperçu local
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            previewImage.src = ev.target.result;
+            previewImage.style.display = 'block';
+            placeholderText.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+
+        // Upload vers Cloudinary
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+        try {
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            if (data.secure_url) {
+                uploadedImageUrl = data.secure_url;
+                console.log('✅ Image uploadée avec succès !');
+            } else {
+                alert('Erreur upload Cloudinary. Vérifie ton preset.');
+            }
+        } catch (err) {
+            alert('Erreur de connexion lors de l\'upload de la photo.');
+            console.error(err);
+        }
+    });
+
+    // ============================================================
+    // 3. GÉNÉRATION DU SLUG
+    // ============================================================
+    function generateSlug(text) {
+        return text
+            .toString()
+            .toLowerCase()
+            .trim()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    }
+
+    // ============================================================
+    // 4. PUBLICATION
+    // ============================================================
+    const publishBtn = document.getElementById('publishBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const errorMsg = document.getElementById('errorMsg');
+    const resultBox = document.getElementById('resultBox');
+    const generatedLink = document.getElementById('generatedLink');
+    const copyBtn = document.getElementById('copyBtn');
+
+    publishBtn.addEventListener('click', async () => {
+        const name = document.getElementById('productName').value.trim();
+        const price = parseInt(document.getElementById('productPrice').value);
+        const stock = parseInt(document.getElementById('productStock').value);
+
+        if (!name) { showError('Veuillez entrer un nom de produit.'); return; }
+        if (!price || price <= 0) { showError('Entrez un prix valide (ex: 85000).'); return; }
+        if (!stock || stock <= 0) { showError('Entrez une quantité valide (ex: 5).'); return; }
+        if (!uploadedImageUrl) { showError('Ajoutez une photo du produit.'); return; }
+
+        setLoading(true);
+
+        try {
+            const { data: inserted, error: insertError } = await supabase
+                .from('products')
+                .insert([
+                    {
+                        name: name,
+                        price: price,
+                        stock: stock,
+                        photo_url: uploadedImageUrl,
+                        seller_name: 'Vendeur Test',
+                        seller_whatsapp: '261341234567',
+                        created_at: new Date().toISOString()
+                    }
+                ])
+                .select();
+
+            if (insertError) {
+                console.error(insertError);
+                showError('Erreur BDD : ' + insertError.message);
+                setLoading(false);
+                return;
+            }
+
+            const newProduct = inserted[0];
+            const productId = newProduct.id;
+            const baseSlug = generateSlug(name);
+            const finalSlug = `${baseSlug}-${productId}`;
+
+            const { error: updateError } = await supabase
+                .from('products')
+                .update({ slug: finalSlug })
+                .eq('id', productId);
+
+            if (updateError) {
+                console.error(updateError);
+                showError('Erreur lors de la génération du lien.');
+                setLoading(false);
+                return;
+            }
+
+            // Lien magique
+            const magicLink = `https://vidygo.com/p/${finalSlug}`;
+            generatedLink.innerText = magicLink;
+            resultBox.style.display = 'block';
+            errorMsg.style.display = 'none';
+
+            // Réinitialisation
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productStock').value = '';
+            previewImage.style.display = 'none';
+            placeholderText.style.display = 'block';
+            photoInput.value = '';
+            uploadedImageUrl = '';
+
+            setLoading(false);
+
+        } catch (err) {
+            console.error('Erreur fatale :', err);
+            showError('Une erreur inattendue est survenue. Vérifie la console.');
+            setLoading(false);
+        }
+    });
+
+    // ============================================================
+    // 5. FONCTIONS UTILITAIRES
+    // ============================================================
+    function showError(msg) {
+        errorMsg.innerText = msg;
+        errorMsg.style.display = 'block';
+        resultBox.style.display = 'none';
+    }
+
+    function setLoading(loading) {
+        if (loading) {
+            btnText.innerText = 'Publication en cours...';
+            btnSpinner.style.display = 'inline-block';
+            publishBtn.disabled = true;
+        } else {
+            btnText.innerText = '🚀 Publier sur la vitrine';
+            btnSpinner.style.display = 'none';
+            publishBtn.disabled = false;
+        }
+    }
+
+    copyBtn.addEventListener('click', () => {
+        const link = generatedLink.innerText;
+        navigator.clipboard.writeText(link).then(() => {
+            const originalText = copyBtn.innerText;
+            copyBtn.innerText = '✅ Copié !';
+            setTimeout(() => copyBtn.innerText = originalText, 2000);
+        }).catch(() => {
+            alert('Copie manuelle : sélectionne le texte ci-dessus.');
+        });
+    });
+
+    console.log('✅ Vidygo - Application vendeur chargée !');
+</script>
+
+</body>
+</html>
