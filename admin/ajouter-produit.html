@@ -237,10 +237,17 @@
     </div>
     <div class="subtitle">Publiez en 2 clics, on s'occupe du reste</div>
 
-    <!-- ===== ZONE PHOTO ===== -->
-    <div class="upload-zone" id="photoZone">
-        <div class="placeholder" id="placeholderText">
-            📷
+    📷<!-- ZONE PHOTO (version améliorée) -->
+<div class="upload-zone" id="photoZone">
+    <div class="placeholder" id="placeholderText">
+        📷
+        <span>Appuyez pour prendre la photo</span>
+    </div>
+    <img id="previewImage" src="" alt="Aperçu" style="display:none; max-width:100%; max-height:200px; border-radius:8px;">
+</div>
+    
+<!-- On rend l'input visible mais discret -->
+<input type="file" id="photoInput" accept="image/*" style="display:block; width:100%; padding:10px; margin-top:10px; border:1px solid #ddd; border-radius:8px; background:#f7f8fa;">
             <span>Appuyez pour prendre la photo</span>
         </div>
         <img id="previewImage" src="" alt="Aperçu">
