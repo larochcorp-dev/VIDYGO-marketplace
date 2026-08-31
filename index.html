@@ -1,162 +1,399 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vidygo - Marketplace malgache</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Vidygo - Marketplace de Madagascar</title>
     
-    <!-- ===== MÉTADONNÉES SEO ===== -->
-    <meta name="description" content="Vidygo, la marketplace qui centralise les produits de vos vendeurs préférés sur Facebook. Achetez en toute confiance à Madagascar." />
-    <meta name="keywords" content="marketplace Madagascar, vente en ligne, produits Facebook, commissions, vendeurs" />
+    <!-- SEO -->
+    <meta name="description" content="Vidygo - La marketplace malgache qui centralise les meilleurs produits de vos vendeurs préférés." />
+    <meta name="keywords" content="marketplace, Madagascar, e-commerce, vente en ligne, produits locaux" />
     <meta name="author" content="Yv Laroch / GraphyNdot" />
     
-    <!-- ===== OPEN GRAPH ===== -->
-    <meta property="og:title" content="Vidygo - Marketplace Madagascar" />
-    <meta property="og:description" content="Achetez et vendez en toute simplicité. Centralisation des produits Facebook sur un seul site." />
-    <meta property="og:image" content="images/og-vidygo.jpg" />
-    <meta property="og:url" content="https://vidygo.netlify.app" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="Vidygo - Marketplace de Madagascar" />
+    <meta property="og:description" content="Achetez en toute confiance sur Vidygo. Centralisation des meilleurs produits malgaches." />
+    <meta property="og:image" content="images/og-image.jpg" />
+    <meta property="og:url" content="https://vidygo.com" />
     <meta property="og:type" content="website" />
     
-    <!-- ===== TWITTER CARD ===== -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Vidygo - Marketplace Madagascar" />
-    <meta name="twitter:description" content="Centralisez vos ventes. Gérez vos commissions. Simple et efficace." />
-    <meta name="twitter:image" content="images/og-vidygo.jpg" />
+    <meta name="twitter:title" content="Vidygo - Marketplace de Madagascar" />
+    <meta name="twitter:description" content="Achetez en toute confiance sur Vidygo." />
+    <meta name="twitter:image" content="images/og-image.jpg" />
     
-    <!-- ===== POLICES (légères) ===== -->
+    <!-- Polices -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet" />
     
-    <!-- ===== STYLES ===== -->
-    <link rel="stylesheet" href="css/style.css" />
+    <!-- Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="icon" href="images/favicon.ico" />
+    
+    <style>
+        /* ===== RESET & BASE ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+        a { text-decoration: none; color: inherit; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: white;
+            padding: 16px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo .brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: #25D366;
+        }
+        .logo .brand span {
+            font-weight: 300;
+            color: #888;
+            font-size: 14px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .nav-links a {
+            color: #555;
+            transition: 0.2s;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #25D366;
+        }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .btn-nav {
+            background: #25D366;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .btn-nav:hover {
+            background: #1da855;
+            transform: scale(1.02);
+        }
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .menu-toggle span {
+            width: 26px;
+            height: 3px;
+            background: #333;
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding: 60px 0 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #f8fafb 0%, #e8f5e9 100%);
+            border-radius: 0 0 40px 40px;
+        }
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .hero h1 .highlight {
+            color: #25D366;
+        }
+        .hero p {
+            font-size: 18px;
+            color: #555;
+            max-width: 600px;
+            margin: 0 auto 28px;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            background: #25D366;
+            color: white;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .btn-primary:hover {
+            background: #1da855;
+            transform: scale(1.03);
+        }
+        .btn-outline {
+            border: 2px solid #25D366;
+            color: #25D366;
+            padding: 12px 34px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .btn-outline:hover {
+            background: #25D366;
+            color: white;
+        }
+
+        /* ===== FEATURES ===== */
+        .features {
+            padding: 60px 0;
+        }
+        .features h2 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 40px;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+        }
+        .feature-card {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        .feature-card .icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            color: #25D366;
+        }
+        .feature-card h3 {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+        .feature-card p {
+            font-size: 14px;
+            color: #777;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: #1a1a1a;
+            color: #aaa;
+            padding: 30px 0 20px;
+            margin-top: 40px;
+        }
+        footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        footer .brand {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+        footer .brand span {
+            font-weight: 300;
+            color: #666;
+        }
+        footer .credit {
+            font-size: 13px;
+            color: #666;
+            text-align: right;
+        }
+        footer .credit strong {
+            color: #888;
+        }
+        footer .social {
+            display: flex;
+            gap: 16px;
+        }
+        footer .social a {
+            color: #666;
+            font-size: 20px;
+            transition: 0.2s;
+        }
+        footer .social a:hover {
+            color: #25D366;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                background: white;
+                padding: 20px;
+                border-radius: 12px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+                position: absolute;
+                top: 70px;
+                right: 20px;
+                min-width: 180px;
+                gap: 12px;
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .menu-toggle {
+                display: flex;
+            }
+            .hero h1 {
+                font-size: 32px;
+            }
+            .hero p {
+                font-size: 16px;
+            }
+            footer .container {
+                flex-direction: column;
+                text-align: center;
+            }
+            footer .credit {
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- ===== NAVBAR ===== -->
-    <header class="navbar">
-        <div class="container">
-            <div class="logo">
-                <a href="index.html">
-                    <img src="images/logo/logo.svg" alt="Vidygo" />
-                    <span class="logo-text">Vidy<span class="dot">.</span>go</span>
-                </a>
-            </div>
-            <nav>
-                <ul class="nav-links" id="navLinks">
-                    <li><a href="index.html" class="active">Accueil</a></li>
-                    <li><a href="#catalogue">Catalogue</a></li>
-                    <li><a href="#pourquoi">Pourquoi Vidygo</a></li>
-                    <li><a href="admin/ajouter-produit.html">Publier un produit</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
+<!-- ===== NAVBAR ===== -->
+<header class="navbar">
+    <div class="container">
+        <div class="logo">
+            <span class="brand">Vidygo <span>|</span> Marketplace</span>
+        </div>
+        <nav>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="active">Accueil</a></li>
+                <li><a href="boutique.html">Boutique</a></li>
+                <li><a href="#features">Pourquoi Vidygo ?</a></li>
+                <li><a href="admin/ajouter-produit.html" style="color:#25D366;">📸 Publier</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="admin/ajouter-produit.html" class="btn-nav">📸 Publier</a>
                 <div class="menu-toggle" id="menuToggle">
                     <span></span><span></span><span></span>
                 </div>
-            </nav>
-        </div>
-    </header>
+            </div>
+        </nav>
+    </div>
+</header>
 
-    <!-- ===== HERO ===== -->
-    <section class="hero">
-        <div class="hero-background">
-            <div class="gradient-orb orb1"></div>
-            <div class="gradient-orb orb2"></div>
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="container">
+        <h1>Bienvenue sur <span class="highlight">Vidygo</span></h1>
+        <p>La marketplace malgache qui centralise les meilleurs produits de vos vendeurs préférés. Simple, rapide et transparent.</p>
+        <div class="hero-actions">
+            <a href="boutique.html" class="btn-primary">🛍️ Découvrir la boutique</a>
+            <a href="admin/ajouter-produit.html" class="btn-outline">📸 Publier un produit</a>
         </div>
-        <div class="container hero-content">
-            <div class="hero-avatar">
-                <img src="images/logo/logo-vidygo.svg" alt="Vidygo" id="heroAvatar" />
-            </div>
-            <h1 class="hero-title">Vidy<span style="color:#25D366;">.</span>go</h1>
-            <p class="hero-subtitle">La marketplace <span class="highlight">malgache</span></p>
-            <p class="hero-tagline">
-                Centralisez vos produits Facebook sur un seul site.<br />
-                Suivez vos commandes et vos commissions en toute transparence.
-            </p>
-            <div class="hero-cta">
-                <a href="admin/ajouter-produit.html" class="btn btn-primary">
-                    <i class="fas fa-plus-circle"></i> Publier un produit
-                </a>
-                <a href="#catalogue" class="btn btn-outline">Découvrir le catalogue</a>
-            </div>
-        </div>
-    </section>
+    </div>
+</section>
 
-    <!-- ===== CATALOGUE (Produits vedettes) ===== -->
-    <section class="featured-projects" id="catalogue">
-        <div class="container">
-            <h2>Produits <span class="highlight">Vedette</span></h2>
-            <p style="text-align:center; color:var(--text-muted); margin-bottom:2rem;">
-                Découvrez les dernières annonces de nos vendeurs.
-            </p>
-            <div class="featured-grid" id="productGrid">
-                <!-- Chargé dynamiquement par main.js (depuis Supabase) -->
-                <div class="product-card placeholder">
-                    <div class="product-image" style="background:#e0e0e0; height:200px; border-radius:12px;"></div>
-                    <h3>Chargement des produits...</h3>
-                    <p style="color:gray;">Patientez un instant</p>
-                </div>
+<!-- ===== FEATURES ===== -->
+<section class="features" id="features">
+    <div class="container">
+        <h2>Pourquoi choisir <span style="color:#25D366;">Vidygo</span> ?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon"><i class="fas fa-store"></i></div>
+                <h3>Centralisation</h3>
+                <p>Tous les produits de vos vendeurs préférés réunis en un seul endroit.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon"><i class="fas fa-whatsapp"></i></div>
+                <h3>Commande via WhatsApp</h3>
+                <p>Commandez en 2 clics et finalisez directement sur WhatsApp.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Transparence</h3>
+                <p>Suivi des commandes, historique et traçabilité pour votre sécurité.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon"><i class="fas fa-mobile-alt"></i></div>
+                <h3>Ultra-léger</h3>
+                <p>Optimisé pour les connexions mobiles à Madagascar. Rapide et fluide.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- ===== POURQUOI VIDYGO ===== -->
-    <section class="services" id="pourquoi" style="background:#f8f9fa; padding:4rem 0;">
-        <div class="container">
-            <h2 style="text-align:center;">Pourquoi <span class="highlight">Vidygo</span> ?</h2>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:2rem; margin-top:2rem;">
-                <div style="text-align:center; padding:1.5rem; background:white; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
-                    <i class="fas fa-link" style="font-size:2.5rem; color:#25D366;"></i>
-                    <h3 style="margin:1rem 0 0.5rem;">Lien magique</h3>
-                    <p style="color:var(--text-muted); font-size:0.9rem;">Publiez votre produit, recevez un lien à partager sur vos réseaux.</p>
-                </div>
-                <div style="text-align:center; padding:1.5rem; background:white; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
-                    <i class="fab fa-whatsapp" style="font-size:2.5rem; color:#25D366;"></i>
-                    <h3 style="margin:1rem 0 0.5rem;">Validation WhatsApp</h3>
-                    <p style="color:var(--text-muted); font-size:0.9rem;">Confirmez vos commandes en un clic, sans quitter WhatsApp.</p>
-                </div>
-                <div style="text-align:center; padding:1.5rem; background:white; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
-                    <i class="fas fa-chart-line" style="font-size:2.5rem; color:#25D366;"></i>
-                    <h3 style="margin:1rem 0 0.5rem;">Commissions tracées</h3>
-                    <p style="color:var(--text-muted); font-size:0.9rem;">Suivez automatiquement vos ventes et vos commissions.</p>
-                </div>
-                <div style="text-align:center; padding:1.5rem; background:white; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
-                    <i class="fas fa-mobile-alt" style="font-size:2.5rem; color:#25D366;"></i>
-                    <h3 style="margin:1rem 0 0.5rem;">100% mobile</h3>
-                    <p style="color:var(--text-muted); font-size:0.9rem;">Optimisé pour les connexions lentes et les smartphones malgaches.</p>
-                </div>
-            </div>
+<!-- ===== FOOTER ===== -->
+<footer>
+    <div class="container">
+        <div>
+            <div class="brand">Vidygo <span>|</span> Marketplace</div>
+            <p style="font-size:13px; color:#555; margin-top:4px;">La marketplace malgache</p>
         </div>
-    </section>
-
-    <!-- ===== FOOTER ===== -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="brand">
-                    <span class="logo-text">Vidy<span class="dot">.</span>go</span>
-                    <p>La marketplace malgache simple et transparente.</p>
-                </div>
-                <div class="footer-social">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Vidygo. Tous droits réservés.</p>
-                <p style="font-size: 0.7rem; color: var(--text-muted); opacity: 0.6; margin-top: 0.3rem;">
-                    Développé par <strong>Yv Laroch / GraphyNdot</strong>
-                </p>
-            </div>
+        <div class="social">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
         </div>
-    </footer>
+        <div class="credit">
+            <p>Site développé par <strong>Yv Laroch</strong> / <strong>GraphyNdot</strong></p>
+            <p style="font-size:11px; color:#444;">&copy; 2026 Vidygo. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
 
-    <!-- ===== SCRIPTS ===== -->
-    <!-- Chargement de Supabase (pour le catalogue dynamique) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/main.js"></script>
+<!-- ===== SCRIPT ===== -->
+<script>
+    // Menu mobile
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('open');
+    });
+    // Fermer le menu en cliquant sur un lien
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+</script>
+
 </body>
 </html>
