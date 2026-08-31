@@ -1,0 +1,2 @@
+# Rediriger les pages produits vers la fonction (on le fera plus tard)
+/p/* /index.html 200
