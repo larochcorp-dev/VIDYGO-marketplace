@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Publier un produit - Vidygo</title>
-    
-    <!-- Chargement du SDK Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
+        /* ===== STYLES (compact) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -26,34 +24,11 @@
             padding: 24px 20px 32px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-        .app-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 6px;
-        }
-        .app-header h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1a1a1a;
-        }
-        .app-header .brand {
-            font-size: 14px;
-            font-weight: 700;
-            color: #25D366;
-            letter-spacing: 0.5px;
-        }
-        .app-header .brand span {
-            font-weight: 300;
-            color: #888;
-        }
-        .subtitle {
-            color: #65676b;
-            font-size: 14px;
-            margin-bottom: 24px;
-            border-left: 3px solid #25D366;
-            padding-left: 12px;
-        }
+        .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+        .app-header h1 { font-size: 22px; font-weight: 700; color: #1a1a1a; }
+        .app-header .brand { font-size: 14px; font-weight: 700; color: #25D366; letter-spacing: 0.5px; }
+        .app-header .brand span { font-weight: 300; color: #888; }
+        .subtitle { color: #65676b; font-size: 14px; margin-bottom: 24px; border-left: 3px solid #25D366; padding-left: 12px; }
         .upload-zone {
             background: #f7f8fa;
             border: 2px dashed #d0d1d5;
@@ -63,64 +38,16 @@
             cursor: pointer;
             transition: 0.2s;
             margin-bottom: 12px;
-            position: relative;
         }
         .upload-zone:active { background: #e9ebee; }
-        .upload-zone img { 
-            max-width: 100%; 
-            max-height: 200px; 
-            border-radius: 8px;
-            display: none;
-            margin: 0 auto;
-        }
-        .upload-zone .placeholder {
-            display: block;
-            font-size: 40px;
-            line-height: 1.2;
-        }
-        .upload-zone .placeholder span {
-            display: block;
-            font-size: 14px;
-            color: #65676b;
-            margin-top: 8px;
-            font-weight: 500;
-        }
-        #photoInput {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-top: 6px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: #f7f8fa;
-            font-size: 14px;
-        }
-        .field-group {
-            margin-bottom: 18px;
-        }
-        .field-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        .field-group input {
-            width: 100%;
-            padding: 14px 16px;
-            font-size: 16px;
-            border: 1px solid #d0d1d5;
-            border-radius: 12px;
-            background: #f7f8fa;
-            transition: 0.2s;
-            outline: none;
-            font-family: inherit;
-        }
-        .field-group input:focus {
-            border-color: #25D366;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.15);
-        }
+        .upload-zone img { max-width: 100%; max-height: 200px; border-radius: 8px; display: none; margin: 0 auto; }
+        .upload-zone .placeholder { display: block; font-size: 40px; line-height: 1.2; }
+        .upload-zone .placeholder span { display: block; font-size: 14px; color: #65676b; margin-top: 8px; font-weight: 500; }
+        #photoInput { display: block; width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #ddd; border-radius: 8px; background: #f7f8fa; font-size: 14px; }
+        .field-group { margin-bottom: 18px; }
+        .field-group label { display: block; font-size: 13px; font-weight: 600; color: #333; margin-bottom: 5px; }
+        .field-group input { width: 100%; padding: 14px 16px; font-size: 16px; border: 1px solid #d0d1d5; border-radius: 12px; background: #f7f8fa; transition: 0.2s; outline: none; font-family: inherit; }
+        .field-group input:focus { border-color: #25D366; background: white; box-shadow: 0 0 0 3px rgba(37,211,102,0.15); }
         .btn-publish {
             width: 100%;
             padding: 16px;
@@ -132,7 +59,7 @@
             font-weight: 700;
             cursor: pointer;
             transition: 0.2s;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            box-shadow: 0 4px 12px rgba(37,211,102,0.3);
             margin-top: 8px;
             display: flex;
             justify-content: center;
@@ -141,82 +68,17 @@
             font-family: inherit;
         }
         .btn-publish:active { transform: scale(0.97); background: #1da855; }
-        .btn-publish:disabled {
-            opacity: 0.6;
-            transform: scale(1);
-            pointer-events: none;
-        }
-        #resultBox {
-            display: none;
-            background: #e8f5e9;
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 24px;
-            border: 1px solid #a5d6a7;
-        }
-        #resultBox .label {
-            font-weight: 600;
-            color: #1e5a2b;
-            font-size: 14px;
-        }
-        #generatedLink {
-            background: white;
-            padding: 12px 14px;
-            border-radius: 10px;
-            word-break: break-all;
-            font-size: 14px;
-            color: #0066cc;
-            margin: 10px 0;
-            border: 1px solid #c8e6c9;
-        }
-        .btn-copy {
-            background: #0066cc;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 50px;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            font-size: 16px;
-            font-family: inherit;
-        }
+        .btn-publish:disabled { opacity: 0.6; pointer-events: none; }
+        #resultBox { display: none; background: #e8f5e9; border-radius: 16px; padding: 20px; margin-top: 24px; border: 1px solid #a5d6a7; }
+        #resultBox .label { font-weight: 600; color: #1e5a2b; font-size: 14px; }
+        #generatedLink { background: white; padding: 12px 14px; border-radius: 10px; word-break: break-all; font-size: 14px; color: #0066cc; margin: 10px 0; border: 1px solid #c8e6c9; }
+        .btn-copy { background: #0066cc; color: white; border: none; padding: 12px; border-radius: 50px; font-weight: 600; width: 100%; cursor: pointer; font-size: 16px; font-family: inherit; }
         .btn-copy:active { background: #004c99; }
-        .spinner {
-            display: none;
-            width: 22px;
-            height: 22px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top: 3px solid white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
+        .spinner { display: none; width: 22px; height: 22px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .error-msg {
-            background: #ffebee;
-            color: #b71c1c;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            display: none;
-            margin-top: 12px;
-        }
-        .footer-credit {
-            margin-top: 28px;
-            padding-top: 16px;
-            border-top: 1px solid #eee;
-            text-align: center;
-            font-size: 11px;
-            color: #999;
-        }
-        .footer-credit strong {
-            color: #666;
-            font-weight: 600;
-        }
-        .footer-credit a {
-            color: #25D366;
-            text-decoration: none;
-        }
+        .error-msg { background: #ffebee; color: #b71c1c; padding: 12px; border-radius: 10px; font-size: 14px; display: none; margin-top: 12px; }
+        .footer-credit { margin-top: 28px; padding-top: 16px; border-top: 1px solid #eee; text-align: center; font-size: 11px; color: #999; }
+        .footer-credit strong { color: #666; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -261,9 +123,9 @@
 
     <div id="resultBox">
         <div class="label">✅ Produit publié ! Voici votre lien :</div>
-        <div id="generatedLink">https://vidygo.com/p/... </div>
+        <div id="generatedLink">https://vidygo.com/p/...</div>
         <button class="btn-copy" id="copyBtn">📋 Copier le lien</button>
-        <p style="font-size:12px; color:#555; margin-top:12px;">Collez ce lien sur Facebook, WhatsApp ou TikTok. La miniature s'affichera automatiquement.</p>
+        <p style="font-size:12px; color:#555; margin-top:12px;">Collez ce lien sur Facebook, WhatsApp ou TikTok.</p>
     </div>
 
     <div class="footer-credit">
@@ -273,18 +135,18 @@
 
 <script>
     // ============================================================
-    // 1. CONFIGURATION (UNE SEULE DÉCLARATION)
+    // 1. CONFIGURATION (UNIQUE)
     // ============================================================
     const SUPABASE_URL = 'https://skwjegapurcdtpbpijdw.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_DiikoWVwaZ39vbiHWwCbUw_NE9LndE7';
     const CLOUDINARY_UPLOAD_PRESET = 'vidygo_uploads';
     const CLOUDINARY_CLOUD_NAME = 'dolugo89';
 
-    // UNIQUE déclaration de supabase
+    // UNE SEULE FOIS
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // ============================================================
-    // 2. LOGIQUE DE L'UPLOAD PHOTO
+    // 2. UPLOAD PHOTO
     // ============================================================
     const photoZone = document.getElementById('photoZone');
     const photoInput = document.getElementById('photoInput');
@@ -292,9 +154,7 @@
     const placeholderText = document.getElementById('placeholderText');
     let uploadedImageUrl = '';
 
-    photoZone.addEventListener('click', () => {
-        photoInput.click();
-    });
+    photoZone.addEventListener('click', () => photoInput.click());
 
     photoInput.addEventListener('change', async (e) => {
         const file = e.target.files[0];
@@ -320,22 +180,21 @@
             const data = await res.json();
             if (data.secure_url) {
                 uploadedImageUrl = data.secure_url;
-                console.log('✅ Image uploadée avec succès !');
+                console.log('✅ Image uploadée');
             } else {
-                alert('Erreur upload Cloudinary. Vérifie ton preset.');
+                alert('Erreur Cloudinary.');
             }
         } catch (err) {
-            alert('Erreur de connexion lors de l\'upload de la photo.');
+            alert('Erreur de connexion.');
             console.error(err);
         }
     });
 
     // ============================================================
-    // 3. GÉNÉRATION DU SLUG
+    // 3. SLUG
     // ============================================================
     function generateSlug(text) {
         return text
-            .toString()
             .toLowerCase()
             .trim()
             .normalize('NFD')
@@ -360,58 +219,43 @@
         const price = parseInt(document.getElementById('productPrice').value);
         const stock = parseInt(document.getElementById('productStock').value);
 
-        if (!name) { showError('Veuillez entrer un nom de produit.'); return; }
-        if (!price || price <= 0) { showError('Entrez un prix valide (ex: 85000).'); return; }
-        if (!stock || stock <= 0) { showError('Entrez une quantité valide (ex: 5).'); return; }
-        if (!uploadedImageUrl) { showError('Ajoutez une photo du produit.'); return; }
+        if (!name) { showError('Nom requis.'); return; }
+        if (!price || price <= 0) { showError('Prix valide requis.'); return; }
+        if (!stock || stock <= 0) { showError('Stock valide requis.'); return; }
+        if (!uploadedImageUrl) { showError('Ajoutez une photo.'); return; }
 
         setLoading(true);
 
         try {
             const { data: inserted, error: insertError } = await supabase
                 .from('products')
-                .insert([
-                    {
-                        name: name,
-                        price: price,
-                        stock: stock,
-                        photo_url: uploadedImageUrl,
-                        seller_name: 'Vendeur Test',
-                        seller_whatsapp: '261341234567',
-                        created_at: new Date().toISOString()
-                    }
-                ])
+                .insert([{
+                    name,
+                    price,
+                    stock,
+                    photo_url: uploadedImageUrl,
+                    seller_name: 'Vendeur Test',
+                    seller_whatsapp: '261341234567',
+                    created_at: new Date().toISOString()
+                }])
                 .select();
 
             if (insertError) {
-                console.error(insertError);
                 showError('Erreur BDD : ' + insertError.message);
                 setLoading(false);
                 return;
             }
 
-            const newProduct = inserted[0];
-            const productId = newProduct.id;
-            const baseSlug = generateSlug(name);
-            const finalSlug = `${baseSlug}-${productId}`;
+            const productId = inserted[0].id;
+            const finalSlug = `${generateSlug(name)}-${productId}`;
 
-            const { error: updateError } = await supabase
-                .from('products')
-                .update({ slug: finalSlug })
-                .eq('id', productId);
+            await supabase.from('products').update({ slug: finalSlug }).eq('id', productId);
 
-            if (updateError) {
-                console.error(updateError);
-                showError('Erreur lors de la génération du lien.');
-                setLoading(false);
-                return;
-            }
-
-            const magicLink = `https://vidygo.com/p/${finalSlug}`;
-            generatedLink.innerText = magicLink;
+            generatedLink.innerText = `https://vidygo.com/p/${finalSlug}`;
             resultBox.style.display = 'block';
             errorMsg.style.display = 'none';
 
+            // Reset
             document.getElementById('productName').value = '';
             document.getElementById('productPrice').value = '';
             document.getElementById('productStock').value = '';
@@ -421,17 +265,12 @@
             uploadedImageUrl = '';
 
             setLoading(false);
-
         } catch (err) {
-            console.error('Erreur fatale :', err);
-            showError('Une erreur inattendue est survenue. Vérifie la console.');
+            showError('Erreur : ' + err.message);
             setLoading(false);
         }
     });
 
-    // ============================================================
-    // 5. FONCTIONS UTILITAIRES
-    // ============================================================
     function showError(msg) {
         errorMsg.innerText = msg;
         errorMsg.style.display = 'block';
@@ -440,7 +279,7 @@
 
     function setLoading(loading) {
         if (loading) {
-            btnText.innerText = 'Publication en cours...';
+            btnText.innerText = 'Publication...';
             btnSpinner.style.display = 'inline-block';
             publishBtn.disabled = true;
         } else {
@@ -453,15 +292,12 @@
     copyBtn.addEventListener('click', () => {
         const link = generatedLink.innerText;
         navigator.clipboard.writeText(link).then(() => {
-            const originalText = copyBtn.innerText;
             copyBtn.innerText = '✅ Copié !';
-            setTimeout(() => copyBtn.innerText = originalText, 2000);
-        }).catch(() => {
-            alert('Copie manuelle : sélectionne le texte ci-dessus.');
-        });
+            setTimeout(() => copyBtn.innerText = '📋 Copier le lien', 2000);
+        }).catch(() => alert('Copie manuelle.'));
     });
 
-    console.log('✅ Vidygo - Application vendeur chargée !');
+    console.log('✅ Vidygo - vendeur chargé');
 </script>
 
 </body>
