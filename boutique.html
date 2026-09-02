@@ -158,27 +158,23 @@
         Site développé par <strong>Yv Laroch</strong> / <strong>GraphyNdot</strong>
     </div>
 </div>
-
 <script>
     // ============================================================
-    // CONFIGURATION (UNIQUE)
+    // CONFIGURATION (sans conflit de variable)
     // ============================================================
     const SUPABASE_URL = 'https://skwjegapurcdtpbpijdw.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_DiikoWVwaZ39vbiHWwCbUw_NE9LndE7';
 
-    // On crée le client Supabase
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Utilisation d'un nom unique pour éviter tout conflit
+    const vidygoClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ============================================================
-    // CHARGEMENT DES PRODUITS
-    // ============================================================
     const grid = document.getElementById('productGrid');
     const loadingState = document.getElementById('loadingState');
     const emptyState = document.getElementById('emptyState');
 
     async function loadProducts() {
         try {
-            const { data, error } = await supabase
+            const { data, error } = await vidygoClient
                 .from('products')
                 .select('id, name, price, photo_url, slug, stock, seller_name')
                 .gt('stock', 0)
@@ -227,7 +223,7 @@
         }
     }
 
-    // UN SEUL APPEL (pas de doublon)
+    // Chargement
     loadProducts();
 </script>
 
