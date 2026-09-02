@@ -23,7 +23,6 @@
         }
         .container { max-width: 1100px; margin: 0 auto; }
 
-        /* HEADER */
         .header {
             display: flex;
             justify-content: space-between;
@@ -32,10 +31,7 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-        }
+        .header h1 { font-size: 28px; font-weight: 700; }
         .header h1 span { color: #25D366; }
         .header .back-link {
             background: white;
@@ -50,14 +46,12 @@
         }
         .header .back-link:hover { background: #25D366; color: white; }
 
-        /* GRILLE */
         .product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 16px;
         }
 
-        /* CARTE PRODUIT */
         .product-card {
             background: white;
             border-radius: 16px;
@@ -98,10 +92,7 @@
             color: #25D366;
             margin-top: 4px;
         }
-        .product-card .info .seller {
-            font-size: 12px;
-            color: #888;
-        }
+        .product-card .info .seller { font-size: 12px; color: #888; }
         .product-card .info .stock-badge {
             font-size: 12px;
             font-weight: 600;
@@ -114,7 +105,6 @@
         .stock-ok { background: #e8f5e9; color: #2e7d32; }
         .stock-out { background: #ffebee; color: #c62828; }
 
-        /* CHARGEMENT / VIDE */
         .loading-state, .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -131,7 +121,6 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* FOOTER */
         .footer-credit {
             margin-top: 40px;
             text-align: center;
@@ -142,40 +131,29 @@
         }
         .footer-credit strong { color: #666; }
 
-        /* RESPONSIVE */
-        @media (min-width: 600px) {
-            .product-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        }
-        @media (min-width: 900px) {
-            .product-grid { grid-template-columns: repeat(4, 1fr); }
-        }
+        @media (min-width: 600px) { .product-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
+        @media (min-width: 900px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- HEADER -->
     <div class="header">
         <h1>🛍️ <span>Vidygo</span> · Boutique</h1>
         <a href="index.html" class="back-link">🏠 Accueil</a>
     </div>
 
-    <!-- GRILLE -->
-    <div id="productGrid" class="product-grid">
-        <!-- Rempli par JavaScript -->
-    </div>
+    <div id="productGrid" class="product-grid"></div>
 
-    <!-- ÉTATS (Chargement / Vide) -->
     <div id="loadingState" class="loading-state">
         <div class="spinner"></div>
         <p>Chargement des produits...</p>
     </div>
     <div id="emptyState" class="empty-state" style="display:none;">
         <p style="font-size:40px;">📦</p>
-        <p>Aucun produit disponible pour le moment.<br>Revenez bientôt !</p>
+        <p>Aucun produit disponible.<br>Revenez bientôt !</p>
     </div>
 
-    <!-- FOOTER -->
     <div class="footer-credit">
         Site développé par <strong>Yv Laroch</strong> / <strong>GraphyNdot</strong>
     </div>
@@ -183,18 +161,16 @@
 
 <script>
     // ============================================================
-    // 1. CONFIGURATION (À REMPLACER AVEC TES VRAIES CLÉS)
+    // CONFIGURATION (UNIQUE)
     // ============================================================
     const SUPABASE_URL = 'https://skwjegapurcdtpbpijdw.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_DiikoWVwaZ39vbiHWwCbUw_NE9LndE7';
 
+    // On crée le client Supabase
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  
-// Appeler loadProducts en lui passant le client
-loadProducts(supabase);
 
     // ============================================================
-    // 2. AFFICHAGE DES PRODUITS
+    // CHARGEMENT DES PRODUITS
     // ============================================================
     const grid = document.getElementById('productGrid');
     const loadingState = document.getElementById('loadingState');
@@ -202,17 +178,16 @@ loadProducts(supabase);
 
     async function loadProducts() {
         try {
-            // On récupère tous les produits avec du stock > 0 ET qui ont un slug (pour éviter les erreurs)
             const { data, error } = await supabase
                 .from('products')
                 .select('id, name, price, photo_url, slug, stock, seller_name')
-                .gt('stock', 0)          // Stock > 0
-                .not('slug', 'is', null) // Avoir un slug
+                .gt('stock', 0)
+                .not('slug', 'is', null)
                 .order('created_at', { ascending: false });
 
             if (error) {
                 console.error('Erreur Supabase :', error);
-                loadingState.innerHTML = '<p style="color:#c62828;">❌ Erreur de chargement. Vérifie la console.</p>';
+                loadingState.innerHTML = '<p style="color:#c62828;">❌ Erreur de chargement.</p>';
                 return;
             }
 
@@ -225,12 +200,11 @@ loadProducts(supabase);
 
             emptyState.style.display = 'none';
 
-            // Construction des cartes
             let html = '';
             data.forEach(product => {
                 const stockLabel = product.stock > 0 ? '✅ En stock' : '❌ Rupture';
                 const stockClass = product.stock > 0 ? 'stock-ok' : 'stock-out';
-                const link = `https://vidygo.com/p/${product.slug}`; // À adapter à ton domaine
+                const link = `https://vidygo.com/p/${product.slug}`;
 
                 html += `
                     <a href="${link}" class="product-card">
@@ -249,13 +223,11 @@ loadProducts(supabase);
 
         } catch (err) {
             console.error('Erreur fatale :', err);
-            loadingState.innerHTML = '<p style="color:#c62828;">❌ Erreur de connexion. Réessaye plus tard.</p>';
+            loadingState.innerHTML = '<p style="color:#c62828;">❌ Erreur de connexion.</p>';
         }
     }
 
-    // ============================================================
-    // 3. LANCEMENT
-    // ============================================================
+    // UN SEUL APPEL (pas de doublon)
     loadProducts();
 </script>
 
