@@ -1,0 +1,7 @@
+[build]
+  # Le répertoire où se trouvent les fonctions
+  functions = "netlify/functions"
+
+[functions]
+  # Version du runtime Node.js
+  node_bundler = "esbuild"
