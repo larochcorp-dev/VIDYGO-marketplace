@@ -1,0 +1,8 @@
+{
+  "name": "vidygo-marketplace",
+  "version": "1.0.0",
+  "description": "Marketplace malgache",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0"
+  }
+}
