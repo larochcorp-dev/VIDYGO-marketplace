@@ -1,2 +1,5 @@
-# Rediriger les pages produits vers la fonction (on le fera plus tard)
-/p/* /index.html 200
+# Redirection vers la fonction Netlify pour les pages produits
+/p/* /.netlify/functions/produit 200
+
+# Redirection par défaut
+/* /index.html 200
