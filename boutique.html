@@ -200,7 +200,7 @@
             data.forEach(product => {
                 const stockLabel = product.stock > 0 ? '✅ En stock' : '❌ Rupture';
                 const stockClass = product.stock > 0 ? 'stock-ok' : 'stock-out';
-                const link = `https://vidygo.com/p/${product.slug}`;
+                const link = `/p/${product.slug}`;
 
                 html += `
                     <a href="${link}" class="product-card">
